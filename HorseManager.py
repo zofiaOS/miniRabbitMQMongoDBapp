@@ -6,7 +6,7 @@ def _add_horse(horse, database):
     db = client[database]
 
     horses = db.horses
-    horses.insert_one(horse).inserted_id
+    horses.insert_one(horse)
 
 
 def add_horse_from_file(horse_file, database):
@@ -26,3 +26,25 @@ def add_horse_from_file(horse_file, database):
         print("Invalid horse file directory: {}".format(horse_file))
         raise
     _add_horse(horse, database)
+
+
+def find_horse(horse_id, database):
+    client = MongoClient()
+    db = client[database]
+
+    horses = db.horses
+    return horses.find_one({"_id": horse_id})
+
+def modify_horse_doc(horse_id, database, key, new_value):
+    client = MongoClient()
+    db = client[database]
+
+    db.horses.update_one(
+        {"_id": horse_id},
+        {
+            "$set": {
+                key: new_value
+            },
+            "$currentDate": {"lastModified": True}
+        }
+    )
