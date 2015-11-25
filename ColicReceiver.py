@@ -6,6 +6,7 @@ def send_mail(mail, msg):
     # TODO function that will send mail to the owner
     pass
 
+
 def callback(ch, method, properties, body):
     horse_id, database = body.split()
     try:
@@ -14,6 +15,7 @@ def callback(ch, method, properties, body):
         print("Owners mail not known")
         raise
     send_mail(Owner_mail, "Your horse has colic!")
+    ch.basic_ack(delivery_tag=method.delivery_tag)
 
-
-BasicReceiver.consume('colic_monitoring', callback)
+# The message has to be durable and acknowledged
+BasicReceiver.consume('colic_monitoring', callback, durable=True, no_ack=False)

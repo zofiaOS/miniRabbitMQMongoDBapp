@@ -8,7 +8,6 @@ def callback(ch, method, properties, body):
     ch.basic_publish(exchange='',
                      routing_key=properties.reply_to,
                      body='True')
-    ch.basic_ack(delivery_tag=method.delivery_tag)
 
 
 BasicReceiver.consume('adding_horses', callback)
