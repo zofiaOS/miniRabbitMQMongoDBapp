@@ -12,8 +12,9 @@ class TestHorseColic(BasicTest):
 
     def setUp(self):
         super(TestHorseColic, self).setUp()
-        # Launch receiver
-        self.receiver = subprocess.Popen(['python', 'ColicReceiver.py'])
+        # Launch receivers
+        self.receiver = subprocess.Popen(['python', 'EmergencyReceiver.py'])
+        self.vetReceiver = subprocess.Popen(['python', 'VetEmergency.py'])
         # Add a horse to db
         HorseManager.add_horse_from_file(TEST_HORSE, TEST_DB)
 
@@ -23,9 +24,10 @@ class TestHorseColic(BasicTest):
         horse_id = horses.find_one({'Name': self.stormy['Name']})['_id']
 
         # Send a msg that a horse has colic
-        msg = str(horse_id) + " " + TEST_DB
-        HorseSender.send_collic_msg(msg)
+        msg = str(horse_id) + " " + TEST_DB + " colic"
+        HorseSender.send_emergency_msg(msg)
 
     def tearDown(self):
-        # Terminate the receiver process
+        # Terminate the receivers processes
         self.receiver.terminate()
+        self.vetReceiver.terminate()

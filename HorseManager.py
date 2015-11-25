@@ -34,3 +34,17 @@ def find_horse(horse_id, database):
 
     horses = db.horses
     return horses.find_one({"_id": horse_id})
+
+def modify_horse_doc(horse_id, database, key, new_value):
+    client = MongoClient()
+    db = client[database]
+
+    db.horses.update_one(
+        {"_id": horse_id},
+        {
+            "$set": {
+                key: new_value
+            },
+            "$currentDate": {"lastModified": True}
+        }
+    )
